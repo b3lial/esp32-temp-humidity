@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <sys/param.h>
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -23,6 +24,7 @@
 #include "lwip/sys.h"
 
 #include "mdns.h"
+#include "esp_http_server.h"
 
 #include "DHT22.h"
 
@@ -34,5 +36,8 @@ void DHT_task(void *pvParameter);
 
 void start_wifi();
 void start_mdns();
+
+httpd_handle_t start_webserver(void);
+void stop_webserver(httpd_handle_t server);
 
 #endif

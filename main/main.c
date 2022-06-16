@@ -7,6 +7,7 @@ void app_main()
 
     start_wifi();
     start_mdns();
+    start_webserver();
 
 	vTaskDelay( 1000 / portTICK_RATE_MS );
 	xTaskCreate( &DHT_task, "DHT_task", 2048, NULL, 5, NULL );
@@ -19,17 +20,9 @@ void app_main()
 void DHT_task(void *pvParameter)
 {
 	setDHTgpio( 4 );
-	printf( "Starting DHT Task\n\n");
-
 	while(1) {
-	
-		printf("=== Reading DHT ===\n" );
 		int ret = readDHT();
-		
 		errorHandler(ret);
-
-		printf( "Hum %.1f\n", getHumidity() );
-		printf( "Tmp %.1f\n", getTemperature() );
 		
 		// -- wait at least 2 sec before reading again ------------
 		// The interval of whole process must be beyond 2 seconds !! 
