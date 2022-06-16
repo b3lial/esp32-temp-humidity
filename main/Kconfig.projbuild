@@ -1,0 +1,15 @@
+menu "Cloud Sensor WiFi Configuration"   
+                               
+    config CLOUDSENSOR_WIFI_SSID   
+        string "SSID"
+        default "changeme"       
+        help                   
+            SSID of destination access point.
+
+    config CLOUDSENSOR_WIFI_PASSWORD    
+        string "Password" 
+        default "changemetoo"
+        help
+            WiFi password of destination access point.
+
+endmenu
