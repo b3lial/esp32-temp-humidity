@@ -4,7 +4,8 @@ void app_main()
 {
 	nvs_flash_init();
     printSysInfo();
-    
+
+    start_wifi();
 	vTaskDelay( 1000 / portTICK_RATE_MS );
 	xTaskCreate( &DHT_task, "DHT_task", 2048, NULL, 5, NULL );
 }

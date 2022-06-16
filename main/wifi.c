@@ -6,22 +6,42 @@ static void event_handler(void *arg, esp_event_base_t event_base,
 static const char *TAG = "wifi handler";
 
 static EventGroupHandle_t s_wifi_event_group;
-static int s_retry_num = 0;
 
 void start_wifi()
 {
     ESP_LOGI(TAG, "starting wifi");
 
-    s_retry_num = 0;
-    s_wifi_event_group = xEventGroupCreate();
+    ESP_ERROR_CHECK(esp_netif_init());
+    ESP_ERROR_CHECK(esp_event_loop_create_default());
+    esp_netif_create_default_wifi_sta();
 
+    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
+    ESP_ERROR_CHECK(esp_wifi_init(&cfg));
+
+    wifi_config_t wifi_config = {
+        .sta = {
+            .ssid = "DEFAULT_SSID",
+            .password = "DEFAULT_PWD",
+            /* Setting a password implies station will connect to all security modes including WEP/WPA.
+             * However these modes are deprecated and not advisable to be used. Incase your Access point
+             * doesn't support WPA2, these mode can be enabled by commenting below line */
+            .threshold.authmode = DEFAULT_AUTHMODE,
+
+            .pmf_cfg = {
+                .capable = true,
+                .required = false},
+        },
+    };
+    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
+    ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config));
+
+    s_wifi_event_group = xEventGroupCreate();
     esp_event_handler_instance_t instance_any_id;
     esp_event_handler_instance_t instance_got_ip;
 
     // Get wifi config
-    wifi_config_t wifi_config;
-    ESP_ERROR_CHECK(esp_wifi_get_config(ESP_IF_WIFI_STA, &wifi_config));
-
+    //wifi_config_t wifi_config;
+    //ESP_ERROR_CHECK(esp_wifi_get_config(ESP_IF_WIFI_STA, &wifi_config));
     ESP_ERROR_CHECK(esp_event_handler_instance_register(WIFI_EVENT,
                                                         ESP_EVENT_ANY_ID,
                                                         &event_handler,
@@ -76,7 +96,6 @@ static void event_handler(void *arg, esp_event_base_t event_base,
     {
         ip_event_got_ip_t *event = (ip_event_got_ip_t *)event_data;
         ESP_LOGI(TAG, "IPv4 address: " IPSTR, IP2STR(&event->ip_info.ip));
-        s_retry_num = 0;
         xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
     }
     else

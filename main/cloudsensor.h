@@ -27,6 +27,7 @@
 
 #define WIFI_CONNECTED_BIT BIT0
 #define WIFI_FAIL_BIT BIT1
+#define DEFAULT_AUTHMODE WIFI_AUTH_WPA2_PSK
 
 void printSysInfo();
 void DHT_task(void *pvParameter);
