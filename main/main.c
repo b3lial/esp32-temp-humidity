@@ -6,6 +6,8 @@ void app_main()
     printSysInfo();
 
     start_wifi();
+    start_mdns();
+
 	vTaskDelay( 1000 / portTICK_RATE_MS );
 	xTaskCreate( &DHT_task, "DHT_task", 2048, NULL, 5, NULL );
 }

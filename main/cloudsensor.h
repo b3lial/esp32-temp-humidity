@@ -22,6 +22,7 @@
 #include "lwip/err.h"
 #include "lwip/sys.h"
 
+#include "mdns.h"
 
 #include "DHT22.h"
 
@@ -32,5 +33,6 @@ void printSysInfo();
 void DHT_task(void *pvParameter);
 
 void start_wifi();
+void start_mdns();
 
 #endif

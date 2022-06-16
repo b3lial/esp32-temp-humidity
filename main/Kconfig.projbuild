@@ -12,4 +12,10 @@ menu "Cloud Sensor WiFi Configuration"
         help
             WiFi password of destination access point.
 
+    config CLOUDSENSOR_MDNS_HOSTNAME
+        string "mDNS Hostname"
+        default "cloudsensor"
+        help
+            mDNS hostname for lookup
+
 endmenu
