@@ -25,6 +25,7 @@
 
 #include "mdns.h"
 #include "esp_http_server.h"
+#include "cJSON.h"
 
 #include "DHT22.h"
 
