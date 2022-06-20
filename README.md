@@ -17,7 +17,7 @@ with a call to `setDHTgpio()`. Below is an image of my setup:
 
 ![ESP32 and DHT22](esp.jpg "ESP32 and DHT22")
 
-## Compilation
+## Build
 It is an esp-idf project so you have to use __idf.py__ to
 build, flash and monitor. Details can be found 
 [here](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/linux-macos-setup.html#get-started-linux-macos-first-steps)
