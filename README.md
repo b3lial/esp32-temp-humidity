@@ -3,6 +3,20 @@ Esp32 firmware for DHT22 based temperature/humidity sensor.
 Connects to to your local wifi access point and publishes
 sensor data via rest uri __http://cloudsensor/data__. 
 
+## Hardware
+You will need:
+
+* ESP32 uC
+* DHT22 temp/humidity
+
+The vanilla dht22 needs an additional pull-up resistor. You can also buy
+prebuild boards which contain the resistor to spare some soldering time.
+The code in this project assumes the data pin of the dht22 is connected
+to GPIO 4 of the esp32. This behaviour can be changed in `DHT_task()`
+with a call to `setDHTgpio()`. Below is an image of my setup:
+
+![ESP32 and DHT22](esp.jpg "ESP32 and DHT22")
+
 ## Compilation
 It is an esp-idf project so you have to use __idf.py__ to
 build, flash and monitor. Details can be found 
