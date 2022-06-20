@@ -7,7 +7,7 @@ sensor data via rest uri __http://cloudsensor/data__.
 You will need:
 
 * ESP32 uC
-* DHT22 temp/humidity
+* DHT22 temp/humidity sensor
 
 The vanilla dht22 needs an additional pull-up resistor. You can also buy
 prebuild boards which contain the resistor to spare some soldering time.
