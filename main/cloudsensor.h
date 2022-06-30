@@ -41,4 +41,6 @@ void start_mdns();
 httpd_handle_t start_webserver(void);
 void stop_webserver(httpd_handle_t server);
 
+void influx_task(void* pvParameter);
+
 #endif

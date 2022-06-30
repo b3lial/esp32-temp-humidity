@@ -16,4 +16,7 @@ void app_main()
     start_wifi();
     start_mdns();
     start_webserver();
+
+	vTaskDelay( 500 / portTICK_RATE_MS );
+	xTaskCreate( &influx_task, "influx_task", 2048, NULL, 5, NULL );
 }
