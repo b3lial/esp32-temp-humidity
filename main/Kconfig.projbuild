@@ -18,6 +18,12 @@ menu "Cloud Sensor Configuration"
         help
             Used for Influx and mDNS hostname for lookup
 
+    config CLOUDSENSOR_INFLUX_HOSTNAME
+        string "Influxdb Host"
+        default "localhost"
+        help
+            Influxdb host name
+
     config CLOUDSENSOR_INFLUX_TOKEN
         string "Influxdb Token"
         default "XXXXXXXXXXXXXXXXXXXXXXXXXXX"
