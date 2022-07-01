@@ -6,7 +6,7 @@ static const char *TAG = "http client";
 void influx_task(void* pvParameter) {
     while (1) {
         vTaskDelay(1000 / portTICK_RATE_MS);
-        void http_influx_write(void);
+        http_influx_write();
     }
 }
 
@@ -80,8 +80,10 @@ esp_err_t _http_event_handler(esp_http_client_event_t *evt)
     return ESP_OK;
 }
 
-static void http_influx_write(void)
+void http_influx_write(void)
 {
+    ESP_LOGI(TAG, "Sending write command to influxdb");
+
     // influx bucket and org are sent via query
     char influx_query[128];
     snprintf(influx_query, 128, "org=%s&bucket=%s&precision=ns", 

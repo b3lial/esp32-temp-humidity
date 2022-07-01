@@ -44,7 +44,7 @@ httpd_handle_t start_webserver(void);
 void stop_webserver(httpd_handle_t server);
 
 void influx_task(void* pvParameter);
-static void http_influx_write(void);
+void http_influx_write(void);
 esp_err_t _http_event_handler(esp_http_client_event_t *evt);
 
 #endif
