@@ -5,7 +5,8 @@ static const char *TAG = "http client";
 // push sensor data continously into influx db
 void influx_task(void* pvParameter) {
     while (1) {
-        vTaskDelay(10000 / portTICK_RATE_MS);
+        vTaskDelay(1000 / portTICK_RATE_MS);
+        void http_influx_write(void);
     }
 }
 
@@ -79,11 +80,17 @@ esp_err_t _http_event_handler(esp_http_client_event_t *evt)
     return ESP_OK;
 }
 
-static void http_rest_with_hostname_path(void)
+static void http_influx_write(void)
 {
+    char influx_query[256];
+    snprintf(influx_query, 256, "org=%s&bucket=%s&precision=ns", 
+        CONFIG_CLOUDSENSOR_INFLUX_ORGANISATION, CONFIG_CLOUDSENSOR_INFLUX_BUCKET);
+
     esp_http_client_config_t config = {
-        .host = "httpbin.org",
-        .path = "/get",
+        .host = CONFIG_CLOUDSENSOR_INFLUX_HOSTNAME,
+        .port = 8086,
+        .path = "/api/v2/write",
+        .query = influx_query,
         .transport_type = HTTP_TRANSPORT_OVER_TCP,
         .event_handler = _http_event_handler,
     };

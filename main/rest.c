@@ -8,8 +8,8 @@ esp_err_t get_handler(httpd_req_t *req)
     // convert sensor values to strings
     char temp[256];
     char humidity[256];
-    sprintf(temp, "%.1f", getTemperature());
-    sprintf(humidity, "%.1f", getHumidity());
+    snprintf(temp, 256, "%.1f", getTemperature());
+    snprintf(humidity, 256, "%.1f", getHumidity());
     ESP_LOGI(TAG, "reading temp: %s", temp);
     ESP_LOGI(TAG, "reading humidty: %s", humidity);
 
