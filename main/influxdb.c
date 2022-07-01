@@ -82,8 +82,9 @@ esp_err_t _http_event_handler(esp_http_client_event_t *evt)
 
 static void http_influx_write(void)
 {
-    char influx_query[256];
-    snprintf(influx_query, 256, "org=%s&bucket=%s&precision=ns", 
+    // influx bucket and org are sent via query
+    char influx_query[128];
+    snprintf(influx_query, 128, "org=%s&bucket=%s&precision=ns", 
         CONFIG_CLOUDSENSOR_INFLUX_ORGANISATION, CONFIG_CLOUDSENSOR_INFLUX_BUCKET);
 
     esp_http_client_config_t config = {
@@ -96,76 +97,25 @@ static void http_influx_write(void)
     };
     esp_http_client_handle_t client = esp_http_client_init(&config);
 
-    // GET
-    esp_err_t err = esp_http_client_perform(client);
-    if (err == ESP_OK) {
-        ESP_LOGI(TAG, "HTTP GET Status = %d, content_length = %d",
-                esp_http_client_get_status_code(client),
-                esp_http_client_get_content_length(client));
-    } else {
-        ESP_LOGE(TAG, "HTTP GET request failed: %s", esp_err_to_name(err));
-    }
+    //auth is transmitted in header
+    char auth_header[150];
+    snprintf(auth_header, 150, "Token %s", CONFIG_CLOUDSENSOR_INFLUX_TOKEN);
+    esp_http_client_set_header(client, "Authorization", auth_header);
+    esp_http_client_set_header(client, "Content-Type", "text/plain; charset=utf-8");
+    esp_http_client_set_header(client, "Accept", "application/json");
 
     // POST
-    const char *post_data = "field1=value1&field2=value2";
-    esp_http_client_set_url(client, "/post");
+    char post_data[64];
+    snprintf(post_data, 64, "%s temperature=1,humidity=5", CONFIG_CLOUDSENSOR_NAME);
     esp_http_client_set_method(client, HTTP_METHOD_POST);
     esp_http_client_set_post_field(client, post_data, strlen(post_data));
-    err = esp_http_client_perform(client);
+    esp_err_t err = esp_http_client_perform(client);
     if (err == ESP_OK) {
         ESP_LOGI(TAG, "HTTP POST Status = %d, content_length = %d",
                 esp_http_client_get_status_code(client),
                 esp_http_client_get_content_length(client));
     } else {
         ESP_LOGE(TAG, "HTTP POST request failed: %s", esp_err_to_name(err));
-    }
-
-    //PUT
-    esp_http_client_set_url(client, "/put");
-    esp_http_client_set_method(client, HTTP_METHOD_PUT);
-    err = esp_http_client_perform(client);
-    if (err == ESP_OK) {
-        ESP_LOGI(TAG, "HTTP PUT Status = %d, content_length = %d",
-                esp_http_client_get_status_code(client),
-                esp_http_client_get_content_length(client));
-    } else {
-        ESP_LOGE(TAG, "HTTP PUT request failed: %s", esp_err_to_name(err));
-    }
-    //PATCH
-    esp_http_client_set_url(client, "/patch");
-    esp_http_client_set_method(client, HTTP_METHOD_PATCH);
-    esp_http_client_set_post_field(client, NULL, 0);
-    err = esp_http_client_perform(client);
-    if (err == ESP_OK) {
-        ESP_LOGI(TAG, "HTTP PATCH Status = %d, content_length = %d",
-                esp_http_client_get_status_code(client),
-                esp_http_client_get_content_length(client));
-    } else {
-        ESP_LOGE(TAG, "HTTP PATCH request failed: %s", esp_err_to_name(err));
-    }
-
-    //DELETE
-    esp_http_client_set_url(client, "/delete");
-    esp_http_client_set_method(client, HTTP_METHOD_DELETE);
-    err = esp_http_client_perform(client);
-    if (err == ESP_OK) {
-        ESP_LOGI(TAG, "HTTP DELETE Status = %d, content_length = %d",
-                esp_http_client_get_status_code(client),
-                esp_http_client_get_content_length(client));
-    } else {
-        ESP_LOGE(TAG, "HTTP DELETE request failed: %s", esp_err_to_name(err));
-    }
-
-    //HEAD
-    esp_http_client_set_url(client, "/get");
-    esp_http_client_set_method(client, HTTP_METHOD_HEAD);
-    err = esp_http_client_perform(client);
-    if (err == ESP_OK) {
-        ESP_LOGI(TAG, "HTTP HEAD Status = %d, content_length = %d",
-                esp_http_client_get_status_code(client),
-                esp_http_client_get_content_length(client));
-    } else {
-        ESP_LOGE(TAG, "HTTP HEAD request failed: %s", esp_err_to_name(err));
     }
 
     esp_http_client_cleanup(client);
