@@ -5,8 +5,8 @@ static const char *TAG = "http client";
 // push sensor data continously into influx db
 void influx_task(void* pvParameter) {
     while (1) {
-        vTaskDelay(1000 / portTICK_RATE_MS);
-        http_influx_write();
+        vTaskDelay(30000 / portTICK_RATE_MS);
+        http_influx_write(getTemperature(), getHumidity());
     }
 }
 
@@ -80,10 +80,8 @@ esp_err_t _http_event_handler(esp_http_client_event_t *evt)
     return ESP_OK;
 }
 
-void http_influx_write(void)
+void http_influx_write(float temp, float humidity)
 {
-    ESP_LOGI(TAG, "Sending write command to influxdb");
-
     // influx bucket and org are sent via query
     char influx_query[128];
     snprintf(influx_query, 128, "org=%s&bucket=%s&precision=ns", 
@@ -106,11 +104,14 @@ void http_influx_write(void)
     esp_http_client_set_header(client, "Content-Type", "text/plain; charset=utf-8");
     esp_http_client_set_header(client, "Accept", "application/json");
 
-    // POST
+    // POST with temp/humidity in body
     char post_data[64];
-    snprintf(post_data, 64, "%s temperature=1,humidity=5", CONFIG_CLOUDSENSOR_NAME);
+    snprintf(post_data, 64, "%s temperature=%.1f,humidity=%.1f", 
+        CONFIG_CLOUDSENSOR_NAME, temp, humidity);
     esp_http_client_set_method(client, HTTP_METHOD_POST);
     esp_http_client_set_post_field(client, post_data, strlen(post_data));
+
+    ESP_LOGI(TAG, "Sending to influx db: %s", post_data);
     esp_err_t err = esp_http_client_perform(client);
     if (err == ESP_OK) {
         ESP_LOGI(TAG, "HTTP POST Status = %d, content_length = %d",
