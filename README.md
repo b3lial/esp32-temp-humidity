@@ -1,7 +1,9 @@
 # ESP32 Cloud Sensor
 Esp32 firmware for DHT22 based temperature/humidity sensor.
-Connects to to your local wifi access point and publishes
-sensor data via rest uri __http://cloudsensor/data__. 
+Connects to to your local wifi access point and 
+
+* publishes sensor data via rest uri __http://cloudsensor/data__. 
+* sends sensor data to an influx db
 
 ## Hardware
 You will need:
@@ -29,7 +31,11 @@ values in section __Cloud Sensor WiFi Configuration__:
 
 * CLOUDSENSOR_WIFI_SSID: Your access point.
 * CLOUDSENSOR_WIFI_PASSWORD: Its password.
-* CLOUDSENSOR_MDNS_HOSTNAME: Optional. Change this value, if you want to be discoverable by a different name.
+* CLOUDSENSOR_NAME: mDNS host name and influxdb measurement name.
+* CLOUDSENSOR_INFLUX_HOSTNAME: Influxdb host name.
+* CLOUDSENSOR_INFLUX_TOKEN: Influxdb access token.
+* CLOUDSENSOR_INFLUX_BUCKET: Influxdb bucket name.
+* CLOUDSENSOR_INFLUX_ORGANISATION: Influxdb organisation name.
 
 ## Sensor Access
 I am using the dht22 library written by Ricardo Timmermann. 
@@ -53,3 +59,21 @@ The sensor can be discovered by __cloudsensor__ and publishes the txt record:
 ## WiFi
 My implementation connects to WPA2 access points and needs a
 DHCP server to get an IP address.
+
+## Influxdb
+Sends sensor data on a 30 seconds basis to influxdb via http request.
+Request has the following structure:
+
+```bash
+#read from dht22
+temp="26.4" 
+hum="45.2"
+
+curl --request POST \
+"http://localhost:8086/api/v2/write?org=phobosys&bucket=cloudsensor&precision=ns" \
+  --header "Authorization: Token XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" \
+  --header "Content-Type: text/plain; charset=utf-8" \
+  --header "Accept: application/json" \
+  --data-binary "
+    office temperature=$temp,humidity=$hum
+```
