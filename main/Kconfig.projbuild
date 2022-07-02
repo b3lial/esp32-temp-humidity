@@ -1,21 +1,45 @@
-menu "Cloud Sensor WiFi Configuration"   
+menu "Cloud Sensor Configuration"   
                                
     config CLOUDSENSOR_WIFI_SSID   
-        string "SSID"
+        string "WiFi SSID"
         default "changeme"       
         help                   
             SSID of destination access point.
 
     config CLOUDSENSOR_WIFI_PASSWORD    
-        string "Password" 
+        string "WiFi Password" 
         default "changemetoo"
         help
             WiFi password of destination access point.
 
-    config CLOUDSENSOR_MDNS_HOSTNAME
-        string "mDNS Hostname"
+    config CLOUDSENSOR_NAME
+        string "Sensor Identifier"
+        default "office"
+        help
+            Used for Influx and mDNS hostname for lookup
+
+    config CLOUDSENSOR_INFLUX_HOSTNAME
+        string "Influxdb Host"
+        default "localhost"
+        help
+            Influxdb host name
+
+    config CLOUDSENSOR_INFLUX_TOKEN
+        string "Influxdb Token"
+        default "XXXXXXXXXXXXXXXXXXXXXXXXXXX"
+        help
+            Influxdb api token
+
+    config CLOUDSENSOR_INFLUX_BUCKET
+        string "Influxdb Bucket"
         default "cloudsensor"
         help
-            mDNS hostname for lookup
+            Influxdb bucket name
+
+    config CLOUDSENSOR_INFLUX_ORGANISATION
+        string "Influxdb Bucket"
+        default "phobosys"
+        help
+            Influxdb organisation name
 
 endmenu

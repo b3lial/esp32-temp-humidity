@@ -3,11 +3,11 @@
 static const char *TAG = "mdns handler";
 
 void start_mdns() {
-    ESP_LOGI(TAG, "mdns hostname: %s", CONFIG_CLOUDSENSOR_MDNS_HOSTNAME);
+    ESP_LOGI(TAG, "mdns hostname: %s", CONFIG_CLOUDSENSOR_NAME);
 
     // init mdns
     ESP_ERROR_CHECK(mdns_init());
-    ESP_ERROR_CHECK(mdns_hostname_set(CONFIG_CLOUDSENSOR_MDNS_HOSTNAME));
+    ESP_ERROR_CHECK(mdns_hostname_set(CONFIG_CLOUDSENSOR_NAME));
     ESP_ERROR_CHECK(mdns_instance_name_set("esp32 based temperatur/humidity sensor"));
 
     // txt record
